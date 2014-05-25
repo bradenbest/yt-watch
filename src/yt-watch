@@ -1,0 +1,55 @@
+#!/bin/bash
+
+VERSION="yt-watch version 1.3.1"
+DEFAULT_FILE=`cat ~/.yt-watchrc`
+
+# Get file
+if [ "$1" == "--help" ] ||
+   [ "$1" == "help" ] ; then
+  echo "Usage: yt-watch arg1 arg2"
+  echo
+  echo "Both args are optional."
+  echo "By default, the script grabs the default file from ~/.yt-watchrc and asks you for a line number"
+  echo
+  echo "arg1 is the action to perform (like help). If it doesn't match an action, it will use it as the filename for the source."
+  echo "  Example: yt-watch videos.txt"
+  echo
+  echo "List of actions:"
+  echo "  --help     --  Displays this help page"
+  echo "  --setfile  --  Sets the default file to use"
+  echo "  --version  --  Displays version"
+  echo
+  echo "arg2 is the line number"
+  echo "  Example: yt-watch videos.txt 21"
+  exit
+elif [ "$1" == "--setfile" ] ; then
+  read -p "Please enter the name of the new default file: " CHOICE
+  echo $CHOICE > ~/.yt-watchrc
+  exit
+elif [ "$1" == "--version" ] ; then
+  echo $VERSION
+  exit
+elif [ "$1" == "" ] ; then
+  FILE=$DEFAULT_FILE
+else
+  FILE=$1
+fi
+
+# Get Line number
+if [ "$2" == "" ] ; then
+  cat -n $FILE
+  read -p "choose a line number: " LNUM
+  if [ "$LNUM" == "" ] ; then
+    LNUM="$"
+  fi
+else
+  LNUM=$2
+fi
+
+
+LINE=`sed -n "${LNUM}p" $FILE`
+
+echo "source: $FILE ($LNUM)"
+echo "line: $LINE"
+
+vlc $LINE
