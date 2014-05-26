@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="yt-watch version 1.3.1"
+VERSION="yt-watch version 1.4"
 DEFAULT_FILE=`cat ~/.yt-watchrc`
 
 # Get file
@@ -37,7 +37,13 @@ fi
 
 # Get Line number
 if [ "$2" == "" ] ; then
-  cat -n $FILE
+  numlines=`wc -l $FILE | cut -f 1 -d " "`
+  if [ "$numlines" -gt 50 ] ; then
+    cat -n $FILE | less
+    cat -n $FILE
+  else
+    cat -n $FILE
+  fi
   read -p "choose a line number: " LNUM
   if [ "$LNUM" == "" ] ; then
     LNUM="$"
